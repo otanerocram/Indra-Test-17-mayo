@@ -30,6 +30,7 @@ Dynamic DB para guardar la información que proviene desde el endpoint de SWAPI.
 ## Pruebas unitarias
 - Para correr las pruebas unitarias ejecutar: `npx jest`
 
+## Capturas de pantalla
 ![Serverless offline](./capturas/serverless_offline.jpg)
 
 ![Swagger List All](./capturas/swagger_listalll.jpg)
