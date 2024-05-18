@@ -38,3 +38,5 @@ Dynamic DB para guardar la información que proviene desde el endpoint de SWAPI.
 ![Swagger](./capturas/swagger.jpg)
 
 ![Test with Jest](./capturas/test.jpg)
+
+![AWS deploy](./capturas/aws_deploy.jpg)
