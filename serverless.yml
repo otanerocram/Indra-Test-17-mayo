@@ -1,0 +1,103 @@
+service: indratestcode
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: "us-east-1"
+  apiGateway:
+    minimumCompressionSize: 1024
+    shouldStartNameWithService: true
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "dynamodb:*"
+      Resource: 
+        - "arn:aws:dynamodb:us-east-1:442318708479:table/starShipsTable"
+
+plugins: 
+  - serverless-auto-swagger
+  - serverless-offline
+  - serverless-jest-plugin
+
+functions:
+  listAll:
+    handler: src/functions/starships/listAll/handler.main
+    events:
+      - http:
+          description: 'Devuelve la lista de todos las naves espaciales que ya fueron almacenados en DynamoDB'
+          method: get
+          path: /api/starships
+          summary: 'Listar Naves Espaciales'
+          swaggerTags: ['Starships']
+          responses:
+            200:
+              description: 'Entrega un array de items dentro de la propiedad: data'
+              bodyType: ResponseData
+
+  create:
+    handler: src/functions/starships/create/handler.main
+    events:
+      - http:
+          description: "Crea una nueva nave espacial y almacena el registro en DynamoDB. El unico parametro obligatorio es: nombre. Se usara el ID en caso de tenerlo en el payload, caso contratio, se almacenara usando el Amazon Web Service Request ID"
+          method: post
+          path: /api/starship/create
+          summary: 'Crear nueva nave espacial'
+          swaggerTags: ['Starships']
+          bodyType: 'StarshipPayload'
+          responses:
+            200:
+              description: "La nueva nave ha sido creada correctamente"
+              bodyType: "ResponseCreate"
+            400:
+              description: "El item a almacenar no es correcto o faltan datos"
+              bodyType: "RequestError"
+            500:
+              description: "Error creando el registro"
+              bodyType: "RequestError"
+
+  searchById:
+    handler: src/functions/starships/searchById/handler.main
+    events:
+      - http:
+          description: "Busca una nave por el ID. En caso de no encontrararla en la base de datos de DynamoDB, la buscara en StarWars API (SWAPI), hara la traduccion de los parametros y almacenara el item en DynamoDB de modo que en la siguiente consulta entregue el registro almacenado"
+          method: get
+          path: /api/starship/{id}
+          summary: "Busca una nave por su ID"
+          swaggerTags: ['Starships']
+          responses:
+            200:
+              description: "Item encontrado"
+              bodyType: "ResponseData"
+            400:
+              description: "El Id no es valido"
+              bodyType: "RequestError"
+            500:
+              description: "Error interno al buscar id"
+              bodyType: "RequestError"
+
+resources:
+    Resources:
+      starShipsTable:
+        Type: "AWS::DynamoDB::Table"
+        Properties:
+          TableName: "starShipsTable"
+          BillingMode: "PAY_PER_REQUEST"
+          AttributeDefinitions: 
+            - AttributeName: "id"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "id"
+              KeyType: "HASH"
+
+custom:
+  autoswagger:
+    title: "Documentation API. Reto Tecnico Indra"
+    basePath: '/dev'
+
+  jest:
+    collectCoverage: true
+    verbose: true

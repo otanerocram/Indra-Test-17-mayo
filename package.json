@@ -1,0 +1,27 @@
+{
+  "name": "indraretotecnico",
+  "version": "1.0.0",
+  "description": "Indra Reto Tecnico NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sls:dev": "sls offline --stage develop --region us-east-1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@middy/core": "^5.3.5",
+    "@middy/http-error-handler": "^5.3.5",
+    "@middy/http-header-normalizer": "^5.3.5",
+    "@middy/http-json-body-parser": "^5.3.5",
+    "aws-sdk": "^2.1618.0",
+    "axios": "^1.6.8",
+    "http-errors": "^2.0.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-auto-swagger": "^3.0.0",
+    "serverless-jest-plugin": "^0.4.0",
+    "serverless-offline": "^13.5.0"
+  }
+}
